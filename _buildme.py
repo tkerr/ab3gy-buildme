@@ -58,12 +58,13 @@ import sys
 # The list of top-level repo directories.
 # You MUST use the path separator specified by os.path.sep.
 # DO NOT add the path separator to the end of the string.
+REPO_ROOT = r'D:\dev\AB3GY\python-repos' + os.path.sep
 REPO_LIST = [
-    r'D:\dev\AB3GY\python-repos\ab3gy-adif',
-    r'D:\dev\AB3GY\python-repos\ab3gy-dxentity',
-    r'D:\dev\AB3GY\python-repos\ab3gy-PyRigCat',
-    r'D:\dev\AB3GY\python-repos\ab3gy-pyutils',
-    r'D:\dev\AB3GY\python-repos\ab3gy-wsjtx',
+    REPO_ROOT + r'ab3gy-adif',
+    REPO_ROOT + r'ab3gy-dxentity',
+    REPO_ROOT + r'ab3gy-PyRigCat',
+    REPO_ROOT + r'ab3gy-pyutils',
+    REPO_ROOT + r'ab3gy-wsjtx',
 ]
 
 
