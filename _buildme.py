@@ -109,14 +109,15 @@ def create_init_file(filespec):
 ########################################################################### 
 if __name__ == "__main__":
 
-    # Usage: _buildme.py [-fv] [pkg_dir]
+    # Usage: _buildme.py [-fgv] [pkg_dir]
     
     git_fetch = False
+    git_write_ok = False
     verbose = False
     
     # Get command line options.
     try:
-        (opts, args) = getopt.getopt(sys.argv[1:], 'fv')
+        (opts, args) = getopt.getopt(sys.argv[1:], 'fgv')
     except (getopt.GetoptError) as err:
         print(str(err))
         sys.exit(1)
@@ -124,6 +125,8 @@ if __name__ == "__main__":
     for (o, a) in opts:
         if (o == '-f'):
             git_fetch = True
+        elif (o == '-g'):
+            git_write_ok = True
         elif (o == '-v'):
             verbose = True
     
@@ -132,6 +135,15 @@ if __name__ == "__main__":
     if (len(args) > 0):
         dst_root = os.path.abspath(args[0])
     if verbose: print('Package directory: {}'.format(dst_root))
+    
+    # Look for a git repository in the destination.
+    if os.path.isdir(os.path.join(dst_root, '.git')):
+        # See if it is OK to copy files here.
+        # Abort if not.
+        if not git_write_ok:
+            print('Git repository found in {}, aborting operation.'.format(dst_root))
+            print('Use -g option to allow file copy operations into this directory.')
+            sys.exit(1)
     
     # Copy files from each repository.
     for repo_name in REPO_LIST:
