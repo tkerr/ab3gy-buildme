@@ -3,6 +3,8 @@ A script used to build my personal package directory.  Does not adhere to any py
 
 Uniquely named to avoid conflict with standard package build scripts e.g., setup.py
 
+**Do not run this script in the repository directory.  It will copy files into the directory that you don't want.**
+
 Developed for personal use by the author, but available to anyone under the license terms below.
 
 ## Dependencies
