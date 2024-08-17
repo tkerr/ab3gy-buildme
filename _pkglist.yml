@@ -23,7 +23,24 @@ packages:
   - src\db_schema.py
   - src\db_tables.py
   - src\parse_cty.py
-
+  
+- name: masterlog
+  src_path: D:\dev\AB3GY\python-repos\ab3gy-masterlog\masterlog
+  dst_path: D:\dev\AB3GY\pypkg\masterlog
+  files:
+  - __init__.py
+  - _env_init.py
+  - _masterlog_clublog.py
+  - _masterlog_dbutils.py
+  - _masterlog_dxentity.py
+  - _masterlog_eqsl.py
+  - _masterlog_file.py
+  - _masterlog_import.py
+  - _masterlog_qrzlookup.py
+  - _masterlog_search.py
+  - _masterlog_utils.py
+  - masterlog_params.py
+  
 - name: PyRigCat
   src_path: D:\dev\AB3GY\python-repos\ab3gy-PyRigCat
   dst_path: D:\dev\AB3GY\pypkg
