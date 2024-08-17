@@ -1,0 +1,61 @@
+packages:
+- name: adif
+  src_path: D:\dev\AB3GY\python-repos\ab3gy-adif
+  dst_path: D:\dev\AB3GY\pypkg
+  files:
+  - adif.py
+  - adif_iter.py
+
+- name: dxentity
+  src_path: D:\dev\AB3GY\python-repos\ab3gy-dxentity
+  dst_path: D:\dev\AB3GY\pypkg\dxentity
+  files:
+  - _env_init.py
+  - cty_utils.py
+  - db_utils.py
+  - dxentity.py
+  - cty\cty.dat
+  - cty\dxcc_list.csv
+  - cty\custom_alias.csv
+  - db\dxentity.sqlite3
+  - src\__init__.py
+  - src\db_api.py
+  - src\db_schema.py
+  - src\db_tables.py
+  - src\parse_cty.py
+
+- name: PyRigCat
+  src_path: D:\dev\AB3GY\python-repos\ab3gy-PyRigCat
+  dst_path: D:\dev\AB3GY\pypkg
+  files:
+  - PyRigCat\__init__.py
+  - PyRigCat\ascii-cmds.txt
+  - PyRigCat\design.txt
+  - PyRigCat\PyRigCat.py
+  - PyRigCat\PyRigCat_ft817.py
+  - PyRigCat\PyRigCat_ft991.py
+  - PyRigCat\PyRigCat_ic7000.py
+  - PyRigCat\PyRigCat_icom.py
+  - PyRigCat\PyRigCatFile.py
+
+- name: pyutils
+  src_path: D:\dev\AB3GY\python-repos\ab3gy-pyutils
+  dst_path: D:\dev\AB3GY\pypkg
+  files:
+  - ConfigFile.py
+  - decode.py
+  - encode.py
+  - filetree.py
+  - great_circle.py
+  - qrzlookup.py
+  - strutils.py
+  - TextFile.py
+  - xmlnode.py
+
+- name: wsjtx
+  src_path: D:\dev\AB3GY\python-repos\ab3gy-wsjtx
+  dst_path: D:\dev\AB3GY\pypkg
+  files:
+  - FT8Decode.py
+  - QColor.py
+  - wsjtxmon.py

@@ -1,5 +1,5 @@
 @echo off
-_buildme.py -fv
+_buildme.py pkglist.yml
 
 pause
 exit /b 0

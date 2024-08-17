@@ -15,7 +15,7 @@
 
 ###############################################################################
 # License
-# Copyright (c) 2023 Tom Kerr AB3GY (ab3gy@arrl.net).
+# Copyright (c) 2024 Tom Kerr AB3GY (ab3gy@arrl.net).
 #
 # Redistribution and use in source and binary forms, with or without 
 # modification, are permitted provided that the following conditions are met:
@@ -43,133 +43,56 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
 ###############################################################################
-
-import git     # pip install GitPython
-import getopt
 import os
-import shutil
 import sys
+import shutil
+import yaml
+from pathlib import Path
 
 
 ###########################################################################
 # Globals.
 ########################################################################### 
-
-# The list of top-level repo directories.
-# You MUST use the path separator specified by os.path.sep.
-# DO NOT add the path separator to the end of the string.
-REPO_ROOT = r'D:\dev\AB3GY\python-repos' + os.path.sep
-REPO_LIST = [
-    REPO_ROOT + r'ab3gy-adif',
-    REPO_ROOT + r'ab3gy-dxentity',
-    REPO_ROOT + r'ab3gy-PyRigCat',
-    REPO_ROOT + r'ab3gy-pyutils',
-    REPO_ROOT + r'ab3gy-wsjtx',
-]
-
-
-###########################################################################
-# Functions.
-########################################################################### 
-
-# ------------------------------------------------------------------------
-def remove(object, target):
-    if object in target:
-        target.remove(object)
-    return target
-
-# ------------------------------------------------------------------------
-def get_repo_files(repo):
-    repo_files = []
-    for root, dirs, files in os.walk(repo):
-        remove('.git', dirs)
-        remove('.gitignore', files)
-        remove('license.txt', files)
-        remove('README.md', files)
-        for file in files:
-            filespec = os.path.join(root, file)
-            repo_files.append(filespec)
-    return repo_files
-
-# ------------------------------------------------------------------------
-def create_init_file(filespec):
-    try:
-        file = open(filespec, 'w')
-        file.write('"""Empty __init__.py module to identify this directory as a package directory"""\n')
-    except Exception as err:
-        print(str(err))
-    try:
-        file.close()
-    except Exception:
-        pass
+scriptname = os.path.basename(sys.argv[0])
 
 
 ###########################################################################
 # Main program.
 ########################################################################### 
 if __name__ == "__main__":
-
-    # Usage: _buildme.py [-fgv] [pkg_dir]
+    # Usage: _buildme.py <package-list.yml>
     
-    git_fetch = False
-    git_write_ok = False
-    verbose = False
-    
-    # Get command line options.
-    try:
-        (opts, args) = getopt.getopt(sys.argv[1:], 'fgv')
-    except (getopt.GetoptError) as err:
-        print(str(err))
+    if (len(sys.argv) < 2):
+        print('No YAML package list file specified.')
+        print('Usage: {} <package-list.yml>'.format(scriptname))
         sys.exit(1)
-    
-    for (o, a) in opts:
-        if (o == '-f'):
-            git_fetch = True
-        elif (o == '-g'):
-            git_write_ok = True
-        elif (o == '-v'):
-            verbose = True
-    
-    # Get optional destination root path.
-    dst_root = os.path.abspath('.')
-    if (len(args) > 0):
-        dst_root = os.path.abspath(args[0])
-    if verbose: print('Package directory: {}'.format(dst_root))
-    
-    # Look for a git repository in the destination.
-    if os.path.isdir(os.path.join(dst_root, '.git')):
-        # See if it is OK to copy files here.
-        # Abort if not.
-        if not git_write_ok:
-            print('Git repository found in {}, aborting operation.'.format(dst_root))
-            print('Use -g option to allow file copy operations into this directory.')
+        
+    yml_file = sys.argv[1]
+    if os.path.isfile(yml_file):
+        try:
+            with open(yml_file) as yf:
+                yd = yaml.safe_load(yf)
+        except Exception as err:
+            print('Error reading {}: {}'.format(yml_file, str(err)))
             sys.exit(1)
-    
-    # Copy files from each repository.
-    for repo_name in REPO_LIST:
-    
-        # Fetch files from the repo to ensure it is up to date.
-        if git_fetch:
-            my_repo = git.Repo(repo_name)
-            for remote in my_repo.remotes:
-                if verbose:
-                    print('Fetching from {} {}'.format(repo_name, remote))
-                remote.fetch()
-            
-        repo_files = get_repo_files(repo_name)
-        for src_file in repo_files:
-            # Remove the top-level repo directory.
-            (prefix, match, suffix) = src_file.partition(repo_name + os.path.sep)
-            
-            # Create the local directory and copy the file.
-            dst_file = os.path.join(dst_root, suffix)
-            dst_dir = os.path.dirname(dst_file)
-            if verbose: print(dst_file)
-            os.makedirs(dst_dir, exist_ok=True)
-            shutil.copy2(src_file, dst_file)
-    
-    # Create an empty __init__.py file if it does not exist.
-    initfile = os.path.join(dst_root, '__init__.py')
-    if not os.path.isfile(initfile):
-        if verbose: print('Creating {}'.format(initfile))
-        create_init_file(initfile)
+    else:
+        print('File not found: {}'.format(yml_file))
+        sys.exit(1)
+
+    for pkg in yd["packages"]:
+        print(pkg['name'])
+        src_base = os.path.abspath(pkg['src_path'])
+        dst_base = os.path.abspath(pkg['dst_path'])
+        for file in pkg['files']:
+            src_file = os.path.join(src_base, file)
+            dst_file = os.path.join(dst_base, file)
+            (dirname, filename) = os.path.split(dst_file)
+            Path(dirname).mkdir(parents=True, exist_ok=True)
+            if os.path.isfile(src_file):
+                try:
+                    shutil.copy2(src_file, dst_file)
+                except Exception as err:
+                    print('Error copying {}: {}'.format(src_file, str(err)))
+                    sys.exit(1)
+            else:
+                print('File not found: {}'.format(src_file))
